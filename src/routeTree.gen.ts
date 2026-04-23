@@ -9,38 +9,189 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppUsersRouteImport } from './routes/_app/users'
+import { Route as AppSubmitRouteImport } from './routes/_app/submit'
+import { Route as AppSubmissionsRouteImport } from './routes/_app/submissions'
+import { Route as AppSettingsRouteImport } from './routes/_app/settings'
+import { Route as AppSessionsRouteImport } from './routes/_app/sessions'
+import { Route as AppMySubmissionsRouteImport } from './routes/_app/my-submissions'
+import { Route as AppEvaluatorsRouteImport } from './routes/_app/evaluators'
+import { Route as AppEvaluationsRouteImport } from './routes/_app/evaluations'
+import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
+import { Route as AppBatchesRouteImport } from './routes/_app/batches'
+import { Route as AppAssignedRouteImport } from './routes/_app/assigned'
 
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppUsersRoute = AppUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSubmitRoute = AppSubmitRouteImport.update({
+  id: '/submit',
+  path: '/submit',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSubmissionsRoute = AppSubmissionsRouteImport.update({
+  id: '/submissions',
+  path: '/submissions',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSessionsRoute = AppSessionsRouteImport.update({
+  id: '/sessions',
+  path: '/sessions',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMySubmissionsRoute = AppMySubmissionsRouteImport.update({
+  id: '/my-submissions',
+  path: '/my-submissions',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEvaluatorsRoute = AppEvaluatorsRouteImport.update({
+  id: '/evaluators',
+  path: '/evaluators',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEvaluationsRoute = AppEvaluationsRouteImport.update({
+  id: '/evaluations',
+  path: '/evaluations',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppBatchesRoute = AppBatchesRouteImport.update({
+  id: '/batches',
+  path: '/batches',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAssignedRoute = AppAssignedRouteImport.update({
+  id: '/assigned',
+  path: '/assigned',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/assigned': typeof AppAssignedRoute
+  '/batches': typeof AppBatchesRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/evaluations': typeof AppEvaluationsRoute
+  '/evaluators': typeof AppEvaluatorsRoute
+  '/my-submissions': typeof AppMySubmissionsRoute
+  '/sessions': typeof AppSessionsRoute
+  '/settings': typeof AppSettingsRoute
+  '/submissions': typeof AppSubmissionsRoute
+  '/submit': typeof AppSubmitRoute
+  '/users': typeof AppUsersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/assigned': typeof AppAssignedRoute
+  '/batches': typeof AppBatchesRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/evaluations': typeof AppEvaluationsRoute
+  '/evaluators': typeof AppEvaluatorsRoute
+  '/my-submissions': typeof AppMySubmissionsRoute
+  '/sessions': typeof AppSessionsRoute
+  '/settings': typeof AppSettingsRoute
+  '/submissions': typeof AppSubmissionsRoute
+  '/submit': typeof AppSubmitRoute
+  '/users': typeof AppUsersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_app': typeof AppRouteWithChildren
+  '/_app/assigned': typeof AppAssignedRoute
+  '/_app/batches': typeof AppBatchesRoute
+  '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/evaluations': typeof AppEvaluationsRoute
+  '/_app/evaluators': typeof AppEvaluatorsRoute
+  '/_app/my-submissions': typeof AppMySubmissionsRoute
+  '/_app/sessions': typeof AppSessionsRoute
+  '/_app/settings': typeof AppSettingsRoute
+  '/_app/submissions': typeof AppSubmissionsRoute
+  '/_app/submit': typeof AppSubmitRoute
+  '/_app/users': typeof AppUsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/assigned'
+    | '/batches'
+    | '/dashboard'
+    | '/evaluations'
+    | '/evaluators'
+    | '/my-submissions'
+    | '/sessions'
+    | '/settings'
+    | '/submissions'
+    | '/submit'
+    | '/users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/assigned'
+    | '/batches'
+    | '/dashboard'
+    | '/evaluations'
+    | '/evaluators'
+    | '/my-submissions'
+    | '/sessions'
+    | '/settings'
+    | '/submissions'
+    | '/submit'
+    | '/users'
+  id:
+    | '__root__'
+    | '/'
+    | '/_app'
+    | '/_app/assigned'
+    | '/_app/batches'
+    | '/_app/dashboard'
+    | '/_app/evaluations'
+    | '/_app/evaluators'
+    | '/_app/my-submissions'
+    | '/_app/sessions'
+    | '/_app/settings'
+    | '/_app/submissions'
+    | '/_app/submit'
+    | '/_app/users'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +199,119 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/users': {
+      id: '/_app/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof AppUsersRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/submit': {
+      id: '/_app/submit'
+      path: '/submit'
+      fullPath: '/submit'
+      preLoaderRoute: typeof AppSubmitRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/submissions': {
+      id: '/_app/submissions'
+      path: '/submissions'
+      fullPath: '/submissions'
+      preLoaderRoute: typeof AppSubmissionsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings': {
+      id: '/_app/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/sessions': {
+      id: '/_app/sessions'
+      path: '/sessions'
+      fullPath: '/sessions'
+      preLoaderRoute: typeof AppSessionsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/my-submissions': {
+      id: '/_app/my-submissions'
+      path: '/my-submissions'
+      fullPath: '/my-submissions'
+      preLoaderRoute: typeof AppMySubmissionsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/evaluators': {
+      id: '/_app/evaluators'
+      path: '/evaluators'
+      fullPath: '/evaluators'
+      preLoaderRoute: typeof AppEvaluatorsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/evaluations': {
+      id: '/_app/evaluations'
+      path: '/evaluations'
+      fullPath: '/evaluations'
+      preLoaderRoute: typeof AppEvaluationsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/batches': {
+      id: '/_app/batches'
+      path: '/batches'
+      fullPath: '/batches'
+      preLoaderRoute: typeof AppBatchesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/assigned': {
+      id: '/_app/assigned'
+      path: '/assigned'
+      fullPath: '/assigned'
+      preLoaderRoute: typeof AppAssignedRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
+interface AppRouteChildren {
+  AppAssignedRoute: typeof AppAssignedRoute
+  AppBatchesRoute: typeof AppBatchesRoute
+  AppDashboardRoute: typeof AppDashboardRoute
+  AppEvaluationsRoute: typeof AppEvaluationsRoute
+  AppEvaluatorsRoute: typeof AppEvaluatorsRoute
+  AppMySubmissionsRoute: typeof AppMySubmissionsRoute
+  AppSessionsRoute: typeof AppSessionsRoute
+  AppSettingsRoute: typeof AppSettingsRoute
+  AppSubmissionsRoute: typeof AppSubmissionsRoute
+  AppSubmitRoute: typeof AppSubmitRoute
+  AppUsersRoute: typeof AppUsersRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppAssignedRoute: AppAssignedRoute,
+  AppBatchesRoute: AppBatchesRoute,
+  AppDashboardRoute: AppDashboardRoute,
+  AppEvaluationsRoute: AppEvaluationsRoute,
+  AppEvaluatorsRoute: AppEvaluatorsRoute,
+  AppMySubmissionsRoute: AppMySubmissionsRoute,
+  AppSessionsRoute: AppSessionsRoute,
+  AppSettingsRoute: AppSettingsRoute,
+  AppSubmissionsRoute: AppSubmissionsRoute,
+  AppSubmitRoute: AppSubmitRoute,
+  AppUsersRoute: AppUsersRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
