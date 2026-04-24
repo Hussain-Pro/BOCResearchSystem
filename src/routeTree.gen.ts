@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RegisterRouteImport } from './routes/register'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppUsersRouteImport } from './routes/_app/users'
@@ -16,6 +17,7 @@ import { Route as AppSubmitRouteImport } from './routes/_app/submit'
 import { Route as AppSubmissionsRouteImport } from './routes/_app/submissions'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppSessionsRouteImport } from './routes/_app/sessions'
+import { Route as AppProfileRouteImport } from './routes/_app/profile'
 import { Route as AppMySubmissionsRouteImport } from './routes/_app/my-submissions'
 import { Route as AppEvaluatorsRouteImport } from './routes/_app/evaluators'
 import { Route as AppEvaluationsRouteImport } from './routes/_app/evaluations'
@@ -23,6 +25,11 @@ import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppBatchesRouteImport } from './routes/_app/batches'
 import { Route as AppAssignedRouteImport } from './routes/_app/assigned'
 
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
@@ -55,6 +62,11 @@ const AppSettingsRoute = AppSettingsRouteImport.update({
 const AppSessionsRoute = AppSessionsRouteImport.update({
   id: '/sessions',
   path: '/sessions',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfileRoute = AppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => AppRoute,
 } as any)
 const AppMySubmissionsRoute = AppMySubmissionsRouteImport.update({
@@ -90,12 +102,14 @@ const AppAssignedRoute = AppAssignedRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/register': typeof RegisterRoute
   '/assigned': typeof AppAssignedRoute
   '/batches': typeof AppBatchesRoute
   '/dashboard': typeof AppDashboardRoute
   '/evaluations': typeof AppEvaluationsRoute
   '/evaluators': typeof AppEvaluatorsRoute
   '/my-submissions': typeof AppMySubmissionsRoute
+  '/profile': typeof AppProfileRoute
   '/sessions': typeof AppSessionsRoute
   '/settings': typeof AppSettingsRoute
   '/submissions': typeof AppSubmissionsRoute
@@ -104,12 +118,14 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/register': typeof RegisterRoute
   '/assigned': typeof AppAssignedRoute
   '/batches': typeof AppBatchesRoute
   '/dashboard': typeof AppDashboardRoute
   '/evaluations': typeof AppEvaluationsRoute
   '/evaluators': typeof AppEvaluatorsRoute
   '/my-submissions': typeof AppMySubmissionsRoute
+  '/profile': typeof AppProfileRoute
   '/sessions': typeof AppSessionsRoute
   '/settings': typeof AppSettingsRoute
   '/submissions': typeof AppSubmissionsRoute
@@ -120,12 +136,14 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
+  '/register': typeof RegisterRoute
   '/_app/assigned': typeof AppAssignedRoute
   '/_app/batches': typeof AppBatchesRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/evaluations': typeof AppEvaluationsRoute
   '/_app/evaluators': typeof AppEvaluatorsRoute
   '/_app/my-submissions': typeof AppMySubmissionsRoute
+  '/_app/profile': typeof AppProfileRoute
   '/_app/sessions': typeof AppSessionsRoute
   '/_app/settings': typeof AppSettingsRoute
   '/_app/submissions': typeof AppSubmissionsRoute
@@ -136,12 +154,14 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/register'
     | '/assigned'
     | '/batches'
     | '/dashboard'
     | '/evaluations'
     | '/evaluators'
     | '/my-submissions'
+    | '/profile'
     | '/sessions'
     | '/settings'
     | '/submissions'
@@ -150,12 +170,14 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/register'
     | '/assigned'
     | '/batches'
     | '/dashboard'
     | '/evaluations'
     | '/evaluators'
     | '/my-submissions'
+    | '/profile'
     | '/sessions'
     | '/settings'
     | '/submissions'
@@ -165,12 +187,14 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_app'
+    | '/register'
     | '/_app/assigned'
     | '/_app/batches'
     | '/_app/dashboard'
     | '/_app/evaluations'
     | '/_app/evaluators'
     | '/_app/my-submissions'
+    | '/_app/profile'
     | '/_app/sessions'
     | '/_app/settings'
     | '/_app/submissions'
@@ -181,10 +205,18 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
+  RegisterRoute: typeof RegisterRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app': {
       id: '/_app'
       path: ''
@@ -232,6 +264,13 @@ declare module '@tanstack/react-router' {
       path: '/sessions'
       fullPath: '/sessions'
       preLoaderRoute: typeof AppSessionsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/profile': {
+      id: '/_app/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/my-submissions': {
@@ -286,6 +325,7 @@ interface AppRouteChildren {
   AppEvaluationsRoute: typeof AppEvaluationsRoute
   AppEvaluatorsRoute: typeof AppEvaluatorsRoute
   AppMySubmissionsRoute: typeof AppMySubmissionsRoute
+  AppProfileRoute: typeof AppProfileRoute
   AppSessionsRoute: typeof AppSessionsRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppSubmissionsRoute: typeof AppSubmissionsRoute
@@ -300,6 +340,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppEvaluationsRoute: AppEvaluationsRoute,
   AppEvaluatorsRoute: AppEvaluatorsRoute,
   AppMySubmissionsRoute: AppMySubmissionsRoute,
+  AppProfileRoute: AppProfileRoute,
   AppSessionsRoute: AppSessionsRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppSubmissionsRoute: AppSubmissionsRoute,
@@ -312,6 +353,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
+  RegisterRoute: RegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

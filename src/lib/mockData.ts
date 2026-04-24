@@ -36,7 +36,35 @@ export interface MockUser {
   role: RoleKey;
   qualification: string;
   lastGradeChangeDate: string;
+  twoFactorEnabled?: boolean;
+  phone?: string;
+  avatarUrl?: string;
 }
+
+export const mockActivationCodes: string[] = [
+  "ERS-2025",
+  "BOC-9931",
+  "RND-4477",
+  "EMP-1024",
+];
+
+export const mockDepartments: string[] = [
+  "الإدارة العامة",
+  "الأبحاث والتطوير",
+  "الإنتاج",
+  "حقول الرميلة",
+  "حقول غرب القرنة",
+  "السلامة المهنية",
+  "الموارد البشرية",
+  "تكنولوجيا المعلومات",
+];
+
+export const mockQualifications: string[] = [
+  "بكالوريوس",
+  "دبلوم عالي",
+  "ماجستير",
+  "دكتوراه",
+];
 
 export const mockUsers: MockUser[] = [
   {

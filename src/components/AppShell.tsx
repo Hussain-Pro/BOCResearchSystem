@@ -13,6 +13,7 @@ import {
   Bell,
   Search,
   ShieldCheck,
+  UserCircle,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { ROLE_LABELS, type RoleKey, mockNotifications } from "@/lib/mockData";
@@ -211,6 +212,11 @@ function AppHeader() {
               <div className="text-sm">{user.fullName}</div>
               <div className="text-xs text-muted-foreground">{user.email}</div>
             </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => navigate({ to: "/profile" })}>
+              <UserCircle className="me-2 h-4 w-4" />
+              الملف الشخصي
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => { logout(); navigate({ to: "/" }); }}>
               <LogOut className="me-2 h-4 w-4" />
