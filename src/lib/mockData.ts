@@ -66,6 +66,25 @@ export const mockQualifications: string[] = [
   "دكتوراه",
 ];
 
+// Mock HR master file — used to verify employees during registration
+export interface MasterEmployee {
+  staffNo: string;
+  fullName: string;
+  department: string;
+  division: string;
+  designation: string;
+  grade: 1 | 2 | 3;
+}
+
+export const mockMasterEmployees: MasterEmployee[] = [
+  { staffNo: "10245", fullName: "م. أحمد فاضل العتابي", department: "حقول الرميلة", division: "شعبة الإنتاج", designation: "مهندس إنتاج", grade: 3 },
+  { staffNo: "10312", fullName: "م. حيدر صبحي كاظم", department: "الإنتاج", division: "شعبة الصيانة الميكانيكية", designation: "مهندس أول", grade: 2 },
+  { staffNo: "10488", fullName: "م. زهراء عبد الكريم", department: "الأبحاث والتطوير", division: "شعبة الكيمياء التطبيقية", designation: "كيميائية", grade: 3 },
+  { staffNo: "10520", fullName: "م. مصطفى جبار الساعدي", department: "حقول غرب القرنة", division: "شعبة الحفر", designation: "مهندس حفر", grade: 3 },
+  { staffNo: "10677", fullName: "أ. فاطمة عبد الزهرة", department: "السلامة المهنية", division: "شعبة الوقاية", designation: "مفتش سلامة", grade: 3 },
+];
+
+
 export const mockUsers: MockUser[] = [
   {
     id: "u1",
