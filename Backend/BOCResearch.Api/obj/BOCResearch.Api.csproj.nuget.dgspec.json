@@ -39,8 +39,8 @@
           "net10.0": {
             "targetAlias": "net10.0",
             "projectReferences": {
-              "D:\\FlutterProjects\\BOCResearchSystem\\Backend\\BOCResearch.Application\\BOCResearch.Application.csproj": {
-                "projectPath": "D:\\FlutterProjects\\BOCResearchSystem\\Backend\\BOCResearch.Application\\BOCResearch.Application.csproj"
+              "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Application\\BOCResearch.Application.csproj": {
+                "projectPath": "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Application\\BOCResearch.Application.csproj"
               },
               "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Infrastructure\\BOCResearch.Infrastructure.csproj": {
                 "projectPath": "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Infrastructure\\BOCResearch.Infrastructure.csproj"
@@ -524,14 +524,14 @@
         }
       }
     },
-    "D:\\FlutterProjects\\BOCResearchSystem\\Backend\\BOCResearch.Application\\BOCResearch.Application.csproj": {
+    "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Application\\BOCResearch.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\FlutterProjects\\BOCResearchSystem\\Backend\\BOCResearch.Application\\BOCResearch.Application.csproj",
+        "projectUniqueName": "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Application\\BOCResearch.Application.csproj",
         "projectName": "BOCResearch.Application",
-        "projectPath": "D:\\FlutterProjects\\BOCResearchSystem\\Backend\\BOCResearch.Application\\BOCResearch.Application.csproj",
+        "projectPath": "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Application\\BOCResearch.Application.csproj",
         "packagesPath": "C:\\Users\\pc\\.nuget\\packages\\",
-        "outputPath": "D:\\FlutterProjects\\BOCResearchSystem\\Backend\\BOCResearch.Application\\obj\\",
+        "outputPath": "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\DevExpress 25.1\\Components\\Offline Packages",
@@ -1265,8 +1265,8 @@
           "net10.0": {
             "targetAlias": "net10.0",
             "projectReferences": {
-              "D:\\FlutterProjects\\BOCResearchSystem\\Backend\\BOCResearch.Application\\BOCResearch.Application.csproj": {
-                "projectPath": "D:\\FlutterProjects\\BOCResearchSystem\\Backend\\BOCResearch.Application\\BOCResearch.Application.csproj"
+              "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Application\\BOCResearch.Application.csproj": {
+                "projectPath": "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Application\\BOCResearch.Application.csproj"
               }
             }
           }

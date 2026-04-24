@@ -28,6 +28,11 @@ public class TokenService : ITokenService
             new Claim(ClaimTypes.Email, user.Email)
         };
 
+        if (!string.IsNullOrEmpty(user.EmployeeId))
+        {
+            claims.Add(new Claim("EmployeeId", user.EmployeeId));
+        }
+
         foreach (var role in roles)
         {
             claims.Add(new Claim(ClaimTypes.Role, role));

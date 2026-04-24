@@ -1,0 +1,24 @@
+# Task: Implement Phase 3, 4, 5
+
+- [ ] **Phase 3: Core Functionality & Workflows**
+    - [x] Eligibility Enforcement in `CreateSubmissionCommand`
+    - [x] Strict Rules Implementation (Diploma Grade 2, etc.)
+    - [x] Conflict of Interest Check
+    - [x] Batch Management API & Logic
+    - [x] Session/Meeting Management API & Logic
+    - [x] Evaluator Grading System & Score Calculation
+    - [x] PDF Minutes Generation (iTextSharp)
+    - [ ] Frontend: Registration with Badge Upload
+    - [ ] Frontend: Role-based Dashboard
+    - [ ] Frontend: Submission Timeline
+- [ ] **Phase 4: Security & Technical Improvements**
+    - [x] Fix `AuthController` dependency issue
+    - [x] Implement TOTP (2FA) Backend & Frontend
+    - [x] CORS Restriction
+    - [x] FluentValidation for all Commands
+    - [ ] Pagination for all list endpoints
+    - [x] In-memory caching for lookups
+- [ ] **Phase 5: Advanced Features**
+    - [ ] Internal Messaging System
+    - [ ] Real-time Notifications (SignalR)
+    - [ ] Analytics Dashboard Statistics

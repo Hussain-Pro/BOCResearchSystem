@@ -17,15 +17,18 @@ public class AuthController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ITokenService _tokenService;
+    private readonly IPasswordHasher _passwordHasher;
     private readonly Application.Common.Services.EligibilityService _eligibilityService;
 
     public AuthController(
         IUnitOfWork unitOfWork, 
         ITokenService tokenService,
+        IPasswordHasher passwordHasher,
         Application.Common.Services.EligibilityService eligibilityService)
     {
         _unitOfWork = unitOfWork;
         _tokenService = tokenService;
+        _passwordHasher = passwordHasher;
         _eligibilityService = eligibilityService;
     }
 
@@ -36,7 +39,7 @@ public class AuthController : ControllerBase
             .Include(u => u.Employee)
             .FirstOrDefaultAsync(u => u.Username == request.Username);
 
-        if (user == null || user.PasswordHash != request.Password)
+        if (user == null || !_passwordHasher.VerifyPassword(request.Password, user.PasswordHash))
         {
             return Unauthorized(new ApiResponse<string>("Invalid username or password"));
         }
@@ -72,6 +75,13 @@ public class AuthController : ControllerBase
         ), "Login successful"));
     }
 
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] BOCResearch.Application.Features.Users.Commands.RegisterUserCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return Ok(new ApiResponse<int>(result, "تم إرسال طلب التسجيل بنجاح، بانتظار تفعيل المشرف"));
+    }
+
     [HttpGet("seed")]
     public async Task<IActionResult> Seed()
     {
@@ -88,7 +98,7 @@ public class AuthController : ControllerBase
         var adminUser = new User
         {
             Username = "admin",
-            PasswordHash = "admin123",
+            PasswordHash = _passwordHasher.HashPassword("admin123"),
             Email = "admin@boc.oil.gov.iq",
             IsActive = true
         };

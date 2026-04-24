@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BOCResearch.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f3fdd501a0c89f75fdac4824ae274743b5f41112")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0680e5a20736c4c5c61d5f791e470ce4cdaa0ccf")]
 [assembly: System.Reflection.AssemblyProductAttribute("BOCResearch.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BOCResearch.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

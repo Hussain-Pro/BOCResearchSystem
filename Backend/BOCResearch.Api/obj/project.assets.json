@@ -3840,8 +3840,8 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "D:\\FlutterProjects\\BOCResearchSystem\\Backend\\BOCResearch.Application\\BOCResearch.Application.csproj": {
-              "projectPath": "D:\\FlutterProjects\\BOCResearchSystem\\Backend\\BOCResearch.Application\\BOCResearch.Application.csproj"
+            "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Application\\BOCResearch.Application.csproj": {
+              "projectPath": "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Application\\BOCResearch.Application.csproj"
             },
             "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Infrastructure\\BOCResearch.Infrastructure.csproj": {
               "projectPath": "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Infrastructure\\BOCResearch.Infrastructure.csproj"

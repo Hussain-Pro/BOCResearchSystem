@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,9 +21,20 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<BOCResearch.Application.Common.Services.EligibilityService>();
 builder.Services.AddScoped<IFtpService, FtpService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IMinutesService, MinutesService>();
+builder.Services.AddScoped<ITwoFactorService, TwoFactorService>();
+builder.Services.AddScoped<BOCResearch.Application.Common.Services.ConflictOfInterestService>();
 builder.Services.AddHostedService<BOCResearch.Api.Services.DailyCleanupService>();
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(BOCResearch.Application.Common.Interfaces.IUnitOfWork).Assembly));
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<ICacheService, CacheService>();
+
+builder.Services.AddMediatR(cfg => {
+    cfg.RegisterServicesFromAssembly(typeof(BOCResearch.Application.Common.Interfaces.IUnitOfWork).Assembly);
+    cfg.AddBehavior(typeof(MediatR.IPipelineBehavior<,>), typeof(BOCResearch.Application.Common.Behaviors.ValidationBehavior<,>));
+});
+
+builder.Services.AddValidatorsFromAssembly(typeof(BOCResearch.Application.Common.Interfaces.IUnitOfWork).Assembly);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -49,11 +61,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder =>
+    options.AddPolicy("BOCPolicy", policy =>
     {
-        builder.AllowAnyOrigin()
+        policy.WithOrigins("http://localhost:8080", "http://localhost:5173", "https://*.boc.oil.gov.iq")
+               .SetIsOriginAllowedToAllowWildcardSubdomains()
                .AllowAnyMethod()
                .AllowAnyHeader();
     });
@@ -72,7 +87,7 @@ app.UseMiddleware<BOCResearch.Api.Middleware.ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowAll");
+app.UseCors("BOCPolicy");
 
 app.UseAuthentication();
 app.UseMiddleware<BOCResearch.Api.Middleware.AuditMiddleware>();
