@@ -30,7 +30,7 @@ const schema = z.object({
   jobTitle: z.string().trim().min(2, "المسمى الوظيفي مطلوب"),
   jobGrade: z.enum(["2", "3"]),
   qualification: z.string().min(1, "الشهادة مطلوبة"),
-  agree: z.literal(true, { errorMap: () => ({ message: "يجب الموافقة على الشروط" }) }),
+  agree: z.literal(true, { message: "يجب الموافقة على الشروط" }),
 }).refine((d) => d.password === d.confirmPassword, {
   path: ["confirmPassword"],
   message: "كلمتا المرور غير متطابقتين",
