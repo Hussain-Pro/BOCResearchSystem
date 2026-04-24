@@ -1,69 +1,111 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Calendar, Clock, MapPin, FileText, Plus } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Calendar, MapPin, Clock, FileText, Plus, Loader2 } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { mockSessions, SESSION_STATUS_LABELS } from "@/lib/mockData";
+import { api } from "@/lib/api";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/sessions")({
   component: SessionsPage,
 });
 
-const COLOR: Record<number, string> = {
-  1: "bg-info/15 text-info border-info/30",
-  2: "bg-success/15 text-success border-success/30",
-  3: "bg-muted text-muted-foreground border-border",
+const SESSION_STATUS_LABELS: Record<number, string> = {
+  1: "مجدولة",
+  2: "منعقدة",
+  3: "مؤرشفة",
 };
 
 function SessionsPage() {
+  const [sessions, setSessions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        const res = await api.get("/sessions");
+        setSessions(res.data.data);
+      } catch (error) {
+        toast.error("فشل في تحميل الجلسات");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSessions();
+  }, []);
+
   return (
     <div className="space-y-6">
       <PageHeader
-        title="الاجتماعات"
-        description="إدارة اجتماعات اللجنة وجداول أعمالها"
-        actions={<Button className="bg-gradient-primary shadow-glow"><Plus className="me-2 h-4 w-4" />اجتماع جديد</Button>}
+        title="اجتماعات اللجنة العلمية"
+        description="إدارة وجدولة اجتماعات اللجنة لمناقشة البحوث والتقارير"
+        actions={
+          <Button className="bg-gradient-primary shadow-glow">
+            <Plus className="me-2 h-4 w-4" />
+            جدولة اجتماع جديد
+          </Button>
+        }
       />
 
-      <div className="space-y-4">
-        {mockSessions.map((s) => (
-          <Card key={s.id} className="transition-all hover:shadow-elegant">
-            <CardHeader>
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-14 w-14 flex-col items-center justify-center rounded-xl bg-gradient-primary text-primary-foreground shadow-glow">
-                    <span className="text-xs">جلسة</span>
-                    <span className="text-xl font-bold">{s.number}</span>
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-3 text-sm">
-                      <span className="flex items-center gap-1"><Calendar className="h-4 w-4 text-muted-foreground" />{s.date}</span>
-                      <span className="flex items-center gap-1"><Clock className="h-4 w-4 text-muted-foreground" />{s.time}</span>
-                    </div>
-                    <div className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
-                      <MapPin className="h-4 w-4" />{s.location}
-                    </div>
-                  </div>
-                </div>
-                <Badge variant="outline" className={COLOR[s.status]}>{SESSION_STATUS_LABELS[s.status]}</Badge>
+      {loading ? (
+        <div className="flex flex-col items-center justify-center p-12 text-muted-foreground">
+          <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
+          <p>جاري تحميل الجلسات...</p>
+        </div>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {sessions.length === 0 ? (
+            <Card className="md:col-span-2 lg:col-span-3 py-12">
+              <div className="flex flex-col items-center justify-center text-muted-foreground">
+                <Calendar className="h-12 w-12 opacity-20 mb-4" />
+                <p>لا توجد جلسات مجدولة حالياً</p>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-muted/40 p-3">
-                <div className="flex items-center gap-2 text-sm">
-                  <FileText className="h-4 w-4 text-primary" />
-                  <span><strong>{s.submissionsCount}</strong> بحوث على جدول الأعمال</span>
-                </div>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline">جدول الأعمال</Button>
-                  {s.status === 2 && <Button size="sm">المحضر</Button>}
-                  {s.status === 1 && <Button size="sm" className="bg-gradient-primary">إدارة الجلسة</Button>}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            </Card>
+          ) : (
+            sessions.map((session) => (
+              <Card key={session.id} className="overflow-hidden transition-all hover:shadow-md">
+                <CardHeader className="bg-muted/30 pb-3">
+                  <div className="flex items-center justify-between">
+                    <Badge variant={session.status === 1 ? "default" : "secondary"}>
+                      {SESSION_STATUS_LABELS[session.status] || "غير معروف"}
+                    </Badge>
+                    <span className="text-xs font-mono text-muted-foreground">#{session.number}</span>
+                  </div>
+                  <CardTitle className="mt-2 text-lg">اجتماع رقم {session.number}</CardTitle>
+                </CardHeader>
+                <CardContent className="pt-4 space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Calendar className="h-4 w-4 text-primary" />
+                      {new Date(session.date).toLocaleDateString("ar-IQ")}
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Clock className="h-4 w-4 text-primary" />
+                      {session.time.substring(0, 5)}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <MapPin className="h-4 w-4 text-primary" />
+                    {session.location}
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <FileText className="h-4 w-4 text-primary" />
+                    {session.submissionsCount} بحوث مدرجة للنقاش
+                  </div>
+                  <div className="pt-2 flex gap-2">
+                    <Button variant="outline" size="sm" className="flex-1">التفاصيل</Button>
+                    {session.status === 1 && (
+                      <Button size="sm" className="flex-1">بدء الجلسة</Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 }

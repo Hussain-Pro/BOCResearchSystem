@@ -77,7 +77,7 @@ function AppSidebar() {
   const location = useLocation();
   if (!user) return null;
 
-  const items = NAV.filter((n) => n.roles.includes(user.role));
+  const items = NAV.filter((n) => n.roles.includes(user.role as RoleKey));
 
   return (
     <Sidebar collapsible="icon" side="right">
@@ -125,12 +125,12 @@ function AppSidebar() {
         <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center">
           <Avatar className="h-9 w-9 ring-2 ring-sidebar-primary/40">
             <AvatarFallback className="bg-sidebar-primary text-sidebar-primary-foreground text-xs">
-              {user.fullName.split(" ")[1]?.[0] ?? user.fullName[0]}
+              {user.fullName?.split(" ")[1]?.[0] ?? user.fullName?.[0] ?? "?"}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
             <div className="truncate text-sm font-semibold text-sidebar-foreground">{user.fullName}</div>
-            <div className="truncate text-xs text-sidebar-foreground/60">{ROLE_LABELS[user.role]}</div>
+            <div className="truncate text-xs text-sidebar-foreground/60">{(ROLE_LABELS as any)[user.role]}</div>
           </div>
         </div>
       </SidebarFooter>
@@ -158,7 +158,7 @@ function AppHeader() {
       </div>
 
       <div className="ms-auto flex items-center gap-2">
-        <Select value={user.role} onValueChange={(v) => switchRole(v as RoleKey)}>
+        <Select value={user.role} onValueChange={(v: string) => switchRole(v)}>
           <SelectTrigger className="hidden h-9 w-[180px] sm:flex">
             <SelectValue />
           </SelectTrigger>
@@ -171,10 +171,10 @@ function AppHeader() {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="relative">
+            <Button variant={"ghost" as any} size={"icon" as any} className="relative">
               <Bell className="h-5 w-5" />
               {unreadCount > 0 && (
-                <Badge className="absolute -end-1 -top-1 h-5 min-w-5 rounded-full px-1 text-[10px]" variant="destructive">
+                <Badge className="absolute -end-1 -top-1 h-5 min-w-5 rounded-full px-1 text-[10px]" variant={"destructive" as any}>
                   {unreadCount}
                 </Badge>
               )}
@@ -201,10 +201,10 @@ function AppHeader() {
             <Button variant="ghost" className="gap-2 px-2">
               <Avatar className="h-8 w-8">
                 <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                  {user.fullName.split(" ")[1]?.[0] ?? user.fullName[0]}
+                  {user.fullName?.split(" ")[1]?.[0] ?? user.fullName?.[0] ?? "?"}
                 </AvatarFallback>
               </Avatar>
-              <span className="hidden text-sm font-medium md:inline">{user.fullName.split(" ").slice(0, 2).join(" ")}</span>
+              <span className="hidden text-sm font-medium md:inline">{user.fullName?.split(" ").slice(0, 2).join(" ") || "المستخدم"}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">

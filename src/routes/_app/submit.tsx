@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Upload, FileText, Send } from "lucide-react";
+import { Upload, FileText, Send, Loader2 } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,25 +10,61 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SUBMISSION_TYPE_LABELS } from "@/lib/mockData";
 import { toast } from "sonner";
+import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/_app/submit")({
   component: SubmitPage,
 });
 
 function SubmitPage() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [type, setType] = useState("1");
   const [title, setTitle] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [pubUrl, setPubUrl] = useState("");
+  const [pubDate, setPubDate] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
+    
     if (!title || !file) {
       toast.error("الرجاء إكمال جميع الحقول المطلوبة");
       return;
     }
-    toast.success("تم تقديم البحث بنجاح. سيتم إشعارك عند المراجعة.");
-    navigate({ to: "/my-submissions" });
+
+    setSubmitting(true);
+    try {
+      // 1. Upload File
+      const formData = new FormData();
+      formData.append("file", file);
+      
+      const uploadRes = await api.post("/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
+      
+      const filePath = uploadRes.data.data;
+
+      // 2. Create Submission
+      await api.post("/submissions", {
+        employeeId: user.employeeId,
+        submissionType: parseInt(type),
+        title,
+        filePath,
+        publicationURL: pubUrl || null,
+        publicationDate: pubDate || null
+      });
+
+      toast.success("تم تقديم البحث بنجاح. سيتم إشعارك عند المراجعة.");
+      navigate({ to: "/my-submissions" });
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "فشل في عملية التقديم");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -66,11 +102,19 @@ function SubmitPage() {
                 <>
                   <div className="space-y-2">
                     <Label>{type === "4" ? "رابط النشر" : "رقم كتاب الموافقة"}</Label>
-                    <Input placeholder={type === "4" ? "https://journal.com/..." : "ك/2025/..."} />
+                    <Input 
+                      value={pubUrl}
+                      onChange={(e) => setPubUrl(e.target.value)}
+                      placeholder={type === "4" ? "https://journal.com/..." : "ك/2025/..."} 
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label>{type === "4" ? "تاريخ النشر" : "تاريخ الموافقة"}</Label>
-                    <Input type="date" />
+                    <Input 
+                      type="date" 
+                      value={pubDate}
+                      onChange={(e) => setPubDate(e.target.value)}
+                    />
                   </div>
                 </>
               )}
@@ -129,11 +173,15 @@ function SubmitPage() {
             </CardContent>
           </Card>
 
-          <Button type="submit" size="lg" className="w-full bg-gradient-primary shadow-glow">
-            <Send className="me-2 h-4 w-4" />
+          <Button type="submit" size="lg" className="w-full bg-gradient-primary shadow-glow" disabled={submitting}>
+            {submitting ? (
+              <Loader2 className="me-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="me-2 h-4 w-4" />
+            )}
             تقديم البحث
           </Button>
-          <Button type="button" variant="outline" size="lg" className="w-full" onClick={() => navigate({ to: "/my-submissions" })}>
+          <Button type="button" variant="outline" size="lg" className="w-full" onClick={() => navigate({ to: "/my-submissions" })} disabled={submitting}>
             إلغاء
           </Button>
         </div>

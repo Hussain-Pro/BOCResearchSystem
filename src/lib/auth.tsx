@@ -1,5 +1,16 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
-import { mockUsers, mockActivationCodes, type MockUser, type RoleKey } from "./mockData";
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import { api } from "./api";
+
+export interface User {
+  id: string;
+  fullName: string;
+  role: string;
+  email: string;
+  employeeId?: string;
+  twoFactorEnabled: boolean;
+  lastGradeChangeDate?: string;
+  eligibleDate?: string;
+}
 
 export interface RegisterData {
   employeeId: string;
@@ -8,107 +19,87 @@ export interface RegisterData {
   username: string;
   password: string;
   activationCode: string;
-  department: string;
-  jobTitle: string;
-  jobGrade: 2 | 3;
-  qualification: string;
 }
 
 interface AuthContextValue {
-  user: MockUser | null;
-  login: (username: string) => boolean;
+  user: User | null;
+  isLoading: boolean;
+  login: (username: string, password?: string) => Promise<{ ok: boolean; message?: string }>;
   logout: () => void;
-  switchRole: (role: RoleKey) => void;
-  register: (data: RegisterData) => { ok: boolean; message: string };
-  updateProfile: (patch: Partial<MockUser>) => void;
-  enable2FA: (otp: string) => boolean;
-  disable2FA: () => void;
+  register: (data: RegisterData) => Promise<{ ok: boolean; message: string }>;
+  updateProfile: (patch: Partial<User>) => void;
+  switchRole: (role: string) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const STORAGE_KEY = "ers_mock_user";
+const USER_STORAGE_KEY = "ers_user";
+const TOKEN_STORAGE_KEY = "ers_token";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<MockUser | null>(() => {
-    if (typeof window === "undefined") return null;
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem(USER_STORAGE_KEY);
+    const token = localStorage.getItem(TOKEN_STORAGE_KEY);
+    if (storedUser && token) {
+      setUser(JSON.parse(storedUser));
+    }
+    setIsLoading(false);
+  }, []);
+
+  const login = async (username: string, password = "admin123") => {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? (JSON.parse(raw) as MockUser) : null;
-    } catch {
-      return null;
-    }
-  });
-
-  const persist = (u: MockUser | null) => {
-    setUser(u);
-    if (typeof window !== "undefined") {
-      if (u) localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
-      else localStorage.removeItem(STORAGE_KEY);
+      const response = await api.post("/auth/login", { username, password });
+      // The API returns { data: { token, user: { ... } } } because of ApiResponse<T>
+      const { token, ...userData } = response.data.data;
+      
+      localStorage.setItem(TOKEN_STORAGE_KEY, token);
+      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
+      setUser(userData);
+      
+      return { ok: true };
+    } catch (error: any) {
+      return { 
+        ok: false, 
+        message: error.response?.data?.message || "فشل تسجيل الدخول. يرجى التحقق من الخادم." 
+      };
     }
   };
 
-  const login = (username: string) => {
-    const found =
-      mockUsers.find((u) => u.email.startsWith(username.toLowerCase())) ??
-      mockUsers[0];
-    persist(found);
-    return true;
+  const logout = () => {
+    localStorage.removeItem(USER_STORAGE_KEY);
+    localStorage.removeItem(TOKEN_STORAGE_KEY);
+    setUser(null);
   };
 
-  const logout = () => persist(null);
-
-  const switchRole = (role: RoleKey) => {
-    const target = mockUsers.find((u) => u.role === role);
-    if (target) persist(target);
-  };
-
-  const register = (data: RegisterData) => {
-    if (!mockActivationCodes.includes(data.activationCode)) {
-      return { ok: false, message: "رمز التفعيل غير صحيح" };
+  const register = async (data: RegisterData) => {
+    try {
+      await api.post("/auth/register", data); // This endpoint is not yet implemented in backend, but will be.
+      return { ok: true, message: "تم إرسال طلب التسجيل بنجاح" };
+    } catch (error: any) {
+      return { 
+        ok: false, 
+        message: error.response?.data?.message || "فشل التسجيل" 
+      };
     }
-    if (mockUsers.some((u) => u.email === data.email)) {
-      return { ok: false, message: "البريد الإلكتروني مستخدم مسبقاً" };
-    }
-    const newUser: MockUser = {
-      id: `u${mockUsers.length + 1}`,
-      fullName: data.fullName,
-      jobTitle: data.jobTitle,
-      jobGrade: data.jobGrade,
-      department: data.department,
-      email: data.email,
-      role: "Employee",
-      qualification: data.qualification,
-      lastGradeChangeDate: new Date().toISOString().slice(0, 10),
-      twoFactorEnabled: false,
-    };
-    mockUsers.push(newUser);
-    return { ok: true, message: "تم إرسال طلب التسجيل بنجاح" };
   };
 
-  const updateProfile = (patch: Partial<MockUser>) => {
+  const updateProfile = (patch: Partial<User>) => {
     if (!user) return;
     const updated = { ...user, ...patch };
-    persist(updated);
-    const idx = mockUsers.findIndex((u) => u.id === user.id);
-    if (idx >= 0) mockUsers[idx] = updated;
+    setUser(updated);
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(updated));
   };
 
-  const enable2FA = (otp: string) => {
-    if (!user) return false;
-    if (!/^\d{6}$/.test(otp)) return false;
-    const sum = otp.split("").reduce((a, b) => a + Number(b), 0);
-    if (sum === 0) return false;
-    updateProfile({ twoFactorEnabled: true });
-    return true;
-  };
-
-  const disable2FA = () => {
-    updateProfile({ twoFactorEnabled: false });
+  const switchRole = (role: string) => {
+    if (!user) return;
+    updateProfile({ role });
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, switchRole, register, updateProfile, enable2FA, disable2FA }}>
+    <AuthContext.Provider value={{ user, isLoading, login, logout, register, updateProfile, switchRole }}>
       {children}
     </AuthContext.Provider>
   );

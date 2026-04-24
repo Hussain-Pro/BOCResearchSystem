@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="BOCResearch.Api/BOCResearch.Api.csproj" />
+  <Project Path="BOCResearch.Application/BOCResearch.Application.csproj" />
+  <Project Path="BOCResearch.Domain/BOCResearch.Domain.csproj" />
+  <Project Path="BOCResearch.Infrastructure/BOCResearch.Infrastructure.csproj" />
+</Solution>

@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppUsersRouteImport } from './routes/_app/users'
@@ -18,16 +19,24 @@ import { Route as AppSubmissionsRouteImport } from './routes/_app/submissions'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppSessionsRouteImport } from './routes/_app/sessions'
 import { Route as AppProfileRouteImport } from './routes/_app/profile'
+import { Route as AppNotificationsRouteImport } from './routes/_app/notifications'
 import { Route as AppMySubmissionsRouteImport } from './routes/_app/my-submissions'
+import { Route as AppMessagesRouteImport } from './routes/_app/messages'
 import { Route as AppEvaluatorsRouteImport } from './routes/_app/evaluators'
 import { Route as AppEvaluationsRouteImport } from './routes/_app/evaluations'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppBatchesRouteImport } from './routes/_app/batches'
+import { Route as AppAuditLogsRouteImport } from './routes/_app/audit-logs'
 import { Route as AppAssignedRouteImport } from './routes/_app/assigned'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppRoute = AppRouteImport.update({
@@ -69,9 +78,19 @@ const AppProfileRoute = AppProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AppRoute,
 } as any)
+const AppNotificationsRoute = AppNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppMySubmissionsRoute = AppMySubmissionsRouteImport.update({
   id: '/my-submissions',
   path: '/my-submissions',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMessagesRoute = AppMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
   getParentRoute: () => AppRoute,
 } as any)
 const AppEvaluatorsRoute = AppEvaluatorsRouteImport.update({
@@ -94,6 +113,11 @@ const AppBatchesRoute = AppBatchesRouteImport.update({
   path: '/batches',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAuditLogsRoute = AppAuditLogsRouteImport.update({
+  id: '/audit-logs',
+  path: '/audit-logs',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAssignedRoute = AppAssignedRouteImport.update({
   id: '/assigned',
   path: '/assigned',
@@ -102,13 +126,17 @@ const AppAssignedRoute = AppAssignedRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/register': typeof RegisterRoute
   '/assigned': typeof AppAssignedRoute
+  '/audit-logs': typeof AppAuditLogsRoute
   '/batches': typeof AppBatchesRoute
   '/dashboard': typeof AppDashboardRoute
   '/evaluations': typeof AppEvaluationsRoute
   '/evaluators': typeof AppEvaluatorsRoute
+  '/messages': typeof AppMessagesRoute
   '/my-submissions': typeof AppMySubmissionsRoute
+  '/notifications': typeof AppNotificationsRoute
   '/profile': typeof AppProfileRoute
   '/sessions': typeof AppSessionsRoute
   '/settings': typeof AppSettingsRoute
@@ -118,13 +146,17 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/register': typeof RegisterRoute
   '/assigned': typeof AppAssignedRoute
+  '/audit-logs': typeof AppAuditLogsRoute
   '/batches': typeof AppBatchesRoute
   '/dashboard': typeof AppDashboardRoute
   '/evaluations': typeof AppEvaluationsRoute
   '/evaluators': typeof AppEvaluatorsRoute
+  '/messages': typeof AppMessagesRoute
   '/my-submissions': typeof AppMySubmissionsRoute
+  '/notifications': typeof AppNotificationsRoute
   '/profile': typeof AppProfileRoute
   '/sessions': typeof AppSessionsRoute
   '/settings': typeof AppSettingsRoute
@@ -136,13 +168,17 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/register': typeof RegisterRoute
   '/_app/assigned': typeof AppAssignedRoute
+  '/_app/audit-logs': typeof AppAuditLogsRoute
   '/_app/batches': typeof AppBatchesRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/evaluations': typeof AppEvaluationsRoute
   '/_app/evaluators': typeof AppEvaluatorsRoute
+  '/_app/messages': typeof AppMessagesRoute
   '/_app/my-submissions': typeof AppMySubmissionsRoute
+  '/_app/notifications': typeof AppNotificationsRoute
   '/_app/profile': typeof AppProfileRoute
   '/_app/sessions': typeof AppSessionsRoute
   '/_app/settings': typeof AppSettingsRoute
@@ -154,13 +190,17 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/forgot-password'
     | '/register'
     | '/assigned'
+    | '/audit-logs'
     | '/batches'
     | '/dashboard'
     | '/evaluations'
     | '/evaluators'
+    | '/messages'
     | '/my-submissions'
+    | '/notifications'
     | '/profile'
     | '/sessions'
     | '/settings'
@@ -170,13 +210,17 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/forgot-password'
     | '/register'
     | '/assigned'
+    | '/audit-logs'
     | '/batches'
     | '/dashboard'
     | '/evaluations'
     | '/evaluators'
+    | '/messages'
     | '/my-submissions'
+    | '/notifications'
     | '/profile'
     | '/sessions'
     | '/settings'
@@ -187,13 +231,17 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_app'
+    | '/forgot-password'
     | '/register'
     | '/_app/assigned'
+    | '/_app/audit-logs'
     | '/_app/batches'
     | '/_app/dashboard'
     | '/_app/evaluations'
     | '/_app/evaluators'
+    | '/_app/messages'
     | '/_app/my-submissions'
+    | '/_app/notifications'
     | '/_app/profile'
     | '/_app/sessions'
     | '/_app/settings'
@@ -205,6 +253,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   RegisterRoute: typeof RegisterRoute
 }
 
@@ -215,6 +264,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app': {
@@ -273,11 +329,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfileRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/notifications': {
+      id: '/_app/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AppNotificationsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/my-submissions': {
       id: '/_app/my-submissions'
       path: '/my-submissions'
       fullPath: '/my-submissions'
       preLoaderRoute: typeof AppMySubmissionsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/messages': {
+      id: '/_app/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof AppMessagesRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/evaluators': {
@@ -308,6 +378,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBatchesRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/audit-logs': {
+      id: '/_app/audit-logs'
+      path: '/audit-logs'
+      fullPath: '/audit-logs'
+      preLoaderRoute: typeof AppAuditLogsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/assigned': {
       id: '/_app/assigned'
       path: '/assigned'
@@ -320,11 +397,14 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppAssignedRoute: typeof AppAssignedRoute
+  AppAuditLogsRoute: typeof AppAuditLogsRoute
   AppBatchesRoute: typeof AppBatchesRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppEvaluationsRoute: typeof AppEvaluationsRoute
   AppEvaluatorsRoute: typeof AppEvaluatorsRoute
+  AppMessagesRoute: typeof AppMessagesRoute
   AppMySubmissionsRoute: typeof AppMySubmissionsRoute
+  AppNotificationsRoute: typeof AppNotificationsRoute
   AppProfileRoute: typeof AppProfileRoute
   AppSessionsRoute: typeof AppSessionsRoute
   AppSettingsRoute: typeof AppSettingsRoute
@@ -335,11 +415,14 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppAssignedRoute: AppAssignedRoute,
+  AppAuditLogsRoute: AppAuditLogsRoute,
   AppBatchesRoute: AppBatchesRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppEvaluationsRoute: AppEvaluationsRoute,
   AppEvaluatorsRoute: AppEvaluatorsRoute,
+  AppMessagesRoute: AppMessagesRoute,
   AppMySubmissionsRoute: AppMySubmissionsRoute,
+  AppNotificationsRoute: AppNotificationsRoute,
   AppProfileRoute: AppProfileRoute,
   AppSessionsRoute: AppSessionsRoute,
   AppSettingsRoute: AppSettingsRoute,
@@ -353,6 +436,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   RegisterRoute: RegisterRoute,
 }
 export const routeTree = rootRouteImport

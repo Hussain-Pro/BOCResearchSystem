@@ -1,0 +1,12 @@
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Domain\bin\Debug\net10.0\BOCResearch.Domain.deps.json
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Domain\bin\Debug\net10.0\BOCResearch.Domain.dll
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Domain\bin\Debug\net10.0\BOCResearch.Domain.pdb
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Domain\obj\Debug\net10.0\BOCResearch.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Domain\obj\Debug\net10.0\BOCResearch.Domain.AssemblyInfoInputs.cache
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Domain\obj\Debug\net10.0\BOCResearch.Domain.AssemblyInfo.cs
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Domain\obj\Debug\net10.0\BOCResearch.Domain.csproj.CoreCompileInputs.cache
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Domain\obj\Debug\net10.0\BOCResearch.Domain.sourcelink.json
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Domain\obj\Debug\net10.0\BOCResearch.Domain.dll
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Domain\obj\Debug\net10.0\refint\BOCResearch.Domain.dll
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Domain\obj\Debug\net10.0\BOCResearch.Domain.pdb
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Domain\obj\Debug\net10.0\ref\BOCResearch.Domain.dll

@@ -1,0 +1,16 @@
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Application\bin\Debug\net10.0\BOCResearch.Application.deps.json
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Application\bin\Debug\net10.0\BOCResearch.Application.dll
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Application\bin\Debug\net10.0\BOCResearch.Application.pdb
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Application\bin\Debug\net10.0\BOCResearch.Domain.dll
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Application\bin\Debug\net10.0\BOCResearch.Domain.pdb
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Application\obj\Debug\net10.0\BOCResearch.Application.csproj.AssemblyReference.cache
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Application\obj\Debug\net10.0\BOCResearch.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Application\obj\Debug\net10.0\BOCResearch.Application.AssemblyInfoInputs.cache
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Application\obj\Debug\net10.0\BOCResearch.Application.AssemblyInfo.cs
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Application\obj\Debug\net10.0\BOCResearch.Application.csproj.CoreCompileInputs.cache
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Application\obj\Debug\net10.0\BOCResearch.Application.sourcelink.json
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Application\obj\Debug\net10.0\BOCResea.1BAEB5CB.Up2Date
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Application\obj\Debug\net10.0\BOCResearch.Application.dll
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Application\obj\Debug\net10.0\refint\BOCResearch.Application.dll
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Application\obj\Debug\net10.0\BOCResearch.Application.pdb
+D:\FlutterProjects\BOCResearchSystem\Backend\BOCResearch.Application\obj\Debug\net10.0\ref\BOCResearch.Application.dll
