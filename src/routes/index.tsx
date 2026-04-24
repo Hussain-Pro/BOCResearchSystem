@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Navigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Navigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { GraduationCap, Lock, User } from "lucide-react";
 import { useAuth } from "@/lib/auth";
@@ -122,6 +122,13 @@ function LoginPage() {
             <Button type="submit" className="w-full bg-gradient-primary shadow-glow hover:opacity-90" size="lg">
               تسجيل الدخول
             </Button>
+
+            <p className="text-center text-sm text-muted-foreground">
+              ليس لديك حساب؟{" "}
+              <Link to="/register" className="font-semibold text-primary hover:underline">
+                سجّل الآن
+              </Link>
+            </p>
           </form>
 
           <div className="space-y-3 rounded-xl border bg-muted/40 p-4">
