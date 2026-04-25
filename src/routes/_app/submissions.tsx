@@ -109,10 +109,8 @@ function SubmissionsPage() {
                       ) : <span className="text-muted-foreground">—</span>}
                     </TableCell>
                     <TableCell className="text-end">
-                      <Button variant="ghost" size="sm" asChild>
-                        <Link to={`/submissions/${s.id}`}>
-                           <Eye className="h-4 w-4" />
-                        </Link>
+                      <Button variant="ghost" size="sm" disabled>
+                        <Eye className="h-4 w-4" />
                       </Button>
                     </TableCell>
                   </TableRow>
