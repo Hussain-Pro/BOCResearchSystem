@@ -10,6 +10,14 @@ export interface User {
   twoFactorEnabled: boolean;
   lastGradeChangeDate?: string;
   eligibleDate?: string;
+  // Extended (mock) profile fields
+  phone?: string;
+  avatarUrl?: string;
+  jobTitle?: string;
+  department?: string;
+  division?: string;
+  qualification?: string;
+  jobGrade?: 1 | 2 | 3;
 }
 
 export interface RegisterData {
@@ -19,6 +27,12 @@ export interface RegisterData {
   username: string;
   password: string;
   activationCode: string;
+  department?: string;
+  division?: string;
+  jobTitle?: string;
+  jobGrade?: 2 | 3;
+  qualification?: string;
+  idCardFile?: string;
 }
 
 interface AuthContextValue {
@@ -26,9 +40,11 @@ interface AuthContextValue {
   isLoading: boolean;
   login: (username: string, password?: string) => Promise<{ ok: boolean; message?: string }>;
   logout: () => void;
-  register: (data: RegisterData) => Promise<{ ok: boolean; message: string }>;
+  register: (data: RegisterData) => { ok: boolean; message: string };
   updateProfile: (patch: Partial<User>) => void;
   switchRole: (role: string) => void;
+  enable2FA: (otp: string) => boolean;
+  disable2FA: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -52,18 +68,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (username: string, password = "admin123") => {
     try {
       const response = await api.post("/auth/login", { username, password });
-      // The API returns { data: { token, user: { ... } } } because of ApiResponse<T>
       const { token, ...userData } = response.data.data;
-      
+
       localStorage.setItem(TOKEN_STORAGE_KEY, token);
       localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
       setUser(userData);
-      
+
       return { ok: true };
     } catch (error: any) {
-      return { 
-        ok: false, 
-        message: error.response?.data?.message || "فشل تسجيل الدخول. يرجى التحقق من الخادم." 
+      return {
+        ok: false,
+        message: error.response?.data?.message || "فشل تسجيل الدخول. يرجى التحقق من الخادم.",
       };
     }
   };
@@ -74,15 +89,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
-  const register = async (data: RegisterData) => {
+  // Mock-only synchronous register (no backend round-trip)
+  const register = (data: RegisterData): { ok: boolean; message: string } => {
     try {
-      await api.post("/auth/register", data); // This endpoint is not yet implemented in backend, but will be.
-      return { ok: true, message: "تم إرسال طلب التسجيل بنجاح" };
-    } catch (error: any) {
-      return { 
-        ok: false, 
-        message: error.response?.data?.message || "فشل التسجيل" 
-      };
+      const pending = JSON.parse(localStorage.getItem("ers_pending_users") || "[]");
+      pending.push({ ...data, status: "pending", createdAt: new Date().toISOString() });
+      localStorage.setItem("ers_pending_users", JSON.stringify(pending));
+      return { ok: true, message: "تم إرسال طلب التسجيل، بانتظار تفعيل المشرف" };
+    } catch {
+      return { ok: false, message: "تعذّر إرسال الطلب" };
     }
   };
 
@@ -98,8 +113,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     updateProfile({ role });
   };
 
+  // Mock 2FA: any 6-digit numeric code with non-zero digit sum is accepted
+  const enable2FA = (otp: string): boolean => {
+    if (!/^\d{6}$/.test(otp)) return false;
+    const sum = otp.split("").reduce((a, c) => a + Number(c), 0);
+    if (sum === 0) return false;
+    updateProfile({ twoFactorEnabled: true });
+    return true;
+  };
+
+  const disable2FA = () => updateProfile({ twoFactorEnabled: false });
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout, register, updateProfile, switchRole }}>
+    <AuthContext.Provider
+      value={{ user, isLoading, login, logout, register, updateProfile, switchRole, enable2FA, disable2FA }}
+    >
       {children}
     </AuthContext.Provider>
   );
