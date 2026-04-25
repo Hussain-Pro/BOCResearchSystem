@@ -138,7 +138,7 @@ function EmployeeDashboard({ user, submissions }: { user: any; submissions: any[
         <StatCard title="إجمالي بحوثي" value={total} icon={FileText} variant="primary" trend="هذه السنة" />
         <StatCard title="قيد المعالجة" value={pending} icon={Clock} variant="warning" trend="بحاجة للمتابعة" />
         <StatCard title="بحوث ناجحة" value={success} icon={CheckCircle2} variant="success" trend="مقبولة للترقية" />
-        <StatCard title="مرفوضة / غير ناجحة" value={rejected} icon={AlertCircle} variant="default" trend="بحاجة لإعادة" />
+        <StatCard title="مرفوضة / غير ناجحة" value={rejected} icon={AlertCircle} variant="info" trend="بحاجة لإعادة" />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
