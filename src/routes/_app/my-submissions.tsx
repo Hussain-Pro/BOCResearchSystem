@@ -121,8 +121,8 @@ function MySubmissions() {
                       )}
                     </TableCell>
                     <TableCell className="text-end">
-                      <Button variant="ghost" size="sm" asChild>
-                        <Link to={`/submissions/${s.id}`}>عرض</Link>
+                      <Button variant="ghost" size="sm" disabled>
+                        عرض
                       </Button>
                     </TableCell>
                   </TableRow>

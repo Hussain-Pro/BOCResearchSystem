@@ -151,8 +151,8 @@ function ProfilePage() {
                 </Avatar>
                 <div className="flex-1">
                   <div className="text-xl font-bold">{user.fullName}</div>
-                  <div className="text-sm text-muted-foreground">{user.jobTitle}</div>
-                  <Badge variant="secondary" className="mt-2">{ROLE_LABELS[user.role]}</Badge>
+                  <div className="text-sm text-muted-foreground">{user.jobTitle ?? "—"}</div>
+                  <Badge variant="secondary" className="mt-2">{(ROLE_LABELS as Record<string, string>)[user.role] ?? user.role}</Badge>
                 </div>
                 <Button variant="outline" size="sm">تغيير الصورة</Button>
               </div>
@@ -161,10 +161,10 @@ function ProfilePage() {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <ReadField icon={UserIcon} label="الرقم الوظيفي" value={user.id.toUpperCase()} />
-                <ReadField icon={Building2} label="القسم" value={user.department} />
-                <ReadField icon={Award} label="الشهادة" value={user.qualification} />
-                <ReadField icon={Calendar} label="آخر تغيير للدرجة" value={user.lastGradeChangeDate} />
-                <ReadField icon={Shield} label="الدرجة الوظيفية" value={`الدرجة ${user.jobGrade}`} />
+                <ReadField icon={Building2} label="القسم" value={user.department ?? "—"} />
+                <ReadField icon={Award} label="الشهادة" value={user.qualification ?? "—"} />
+                <ReadField icon={Calendar} label="آخر تغيير للدرجة" value={user.lastGradeChangeDate ?? "—"} />
+                <ReadField icon={Shield} label="الدرجة الوظيفية" value={user.jobGrade ? `الدرجة ${user.jobGrade}` : "—"} />
               </div>
 
               <Separator />
