@@ -10,6 +10,14 @@ export interface User {
   twoFactorEnabled: boolean;
   lastGradeChangeDate?: string;
   eligibleDate?: string;
+  // Extended (mock) profile fields
+  phone?: string;
+  avatarUrl?: string;
+  jobTitle?: string;
+  department?: string;
+  division?: string;
+  qualification?: string;
+  jobGrade?: 1 | 2 | 3;
 }
 
 export interface RegisterData {
@@ -19,7 +27,16 @@ export interface RegisterData {
   username: string;
   password: string;
   activationCode: string;
+<<<<<<< HEAD
   badgeImagePath?: string | null;
+=======
+  department?: string;
+  division?: string;
+  jobTitle?: string;
+  jobGrade?: 2 | 3;
+  qualification?: string;
+  idCardFile?: string;
+>>>>>>> 6da3fa9c37a05dc41cf256c3c4433088baccb851
 }
 
 interface AuthContextValue {
@@ -27,9 +44,11 @@ interface AuthContextValue {
   isLoading: boolean;
   login: (username: string, password?: string) => Promise<{ ok: boolean; message?: string }>;
   logout: () => void;
-  register: (data: RegisterData) => Promise<{ ok: boolean; message: string }>;
+  register: (data: RegisterData) => { ok: boolean; message: string };
   updateProfile: (patch: Partial<User>) => void;
   switchRole: (role: string) => void;
+  enable2FA: (otp: string) => boolean;
+  disable2FA: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -72,6 +91,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (username: string, password = "admin123") => {
     try {
       const response = await api.post("/auth/login", { username, password });
+<<<<<<< HEAD
       const body = response.data;
       if (body?.success === false) {
         return { ok: false, message: body?.message || "فشل تسجيل الدخول" };
@@ -84,10 +104,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const userData = mapAuthPayloadToUser(rest);
 
       localStorage.setItem(TOKEN_STORAGE_KEY, token as string);
+=======
+      const { token, ...userData } = response.data.data;
+
+      localStorage.setItem(TOKEN_STORAGE_KEY, token);
+>>>>>>> 6da3fa9c37a05dc41cf256c3c4433088baccb851
       localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
       setUser(userData);
 
       return { ok: true };
+<<<<<<< HEAD
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string; errors?: string[] } } };
       const msg =
@@ -95,6 +121,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         err.response?.data?.errors?.[0] ||
         "فشل تسجيل الدخول. يرجى التحقق من الخادم.";
       return { ok: false, message: msg };
+=======
+    } catch (error: any) {
+      return {
+        ok: false,
+        message: error.response?.data?.message || "فشل تسجيل الدخول. يرجى التحقق من الخادم.",
+      };
+>>>>>>> 6da3fa9c37a05dc41cf256c3c4433088baccb851
     }
   };
 
@@ -104,8 +137,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
-  const register = async (data: RegisterData) => {
+  // Mock-only synchronous register (no backend round-trip)
+  const register = (data: RegisterData): { ok: boolean; message: string } => {
     try {
+<<<<<<< HEAD
       await api.post("/auth/register", {
         username: data.username,
         password: data.password,
@@ -122,6 +157,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         err.response?.data?.errors?.[0] ||
         "فشل التسجيل";
       return { ok: false, message: msg };
+=======
+      const pending = JSON.parse(localStorage.getItem("ers_pending_users") || "[]");
+      pending.push({ ...data, status: "pending", createdAt: new Date().toISOString() });
+      localStorage.setItem("ers_pending_users", JSON.stringify(pending));
+      return { ok: true, message: "تم إرسال طلب التسجيل، بانتظار تفعيل المشرف" };
+    } catch {
+      return { ok: false, message: "تعذّر إرسال الطلب" };
+>>>>>>> 6da3fa9c37a05dc41cf256c3c4433088baccb851
     }
   };
 
@@ -137,8 +180,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     updateProfile({ role });
   };
 
+  // Mock 2FA: any 6-digit numeric code with non-zero digit sum is accepted
+  const enable2FA = (otp: string): boolean => {
+    if (!/^\d{6}$/.test(otp)) return false;
+    const sum = otp.split("").reduce((a, c) => a + Number(c), 0);
+    if (sum === 0) return false;
+    updateProfile({ twoFactorEnabled: true });
+    return true;
+  };
+
+  const disable2FA = () => updateProfile({ twoFactorEnabled: false });
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout, register, updateProfile, switchRole }}>
+    <AuthContext.Provider
+      value={{ user, isLoading, login, logout, register, updateProfile, switchRole, enable2FA, disable2FA }}
+    >
       {children}
     </AuthContext.Provider>
   );
