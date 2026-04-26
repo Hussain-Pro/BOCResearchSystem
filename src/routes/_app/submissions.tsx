@@ -100,7 +100,7 @@ function SubmissionsPage() {
                   <TableRow key={s.id} className="hover:bg-accent/30">
                     <TableCell className="max-w-xs"><div className="truncate font-medium">{s.title}</div></TableCell>
                     <TableCell className="text-sm">{s.employeeName || s.employeeId}</TableCell>
-                    <TableCell className="text-sm">{(SUBMISSION_TYPE_LABELS as any)[s.submissionType]}</TableCell>
+                    <TableCell className="text-sm">{(SUBMISSION_TYPE_LABELS as any)[s.type]}</TableCell>
                     <TableCell className="text-sm text-muted-foreground">{new Date(s.submittedAt).toLocaleDateString("ar-IQ")}</TableCell>
                     <TableCell><StatusBadge status={s.status} /></TableCell>
                     <TableCell>

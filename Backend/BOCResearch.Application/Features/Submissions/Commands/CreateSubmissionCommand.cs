@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using BOCResearch.Application.Common.Interfaces;
 using BOCResearch.Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace BOCResearch.Application.Features.Submissions.Commands;
 
@@ -52,10 +53,10 @@ public class CreateSubmissionHandler : IRequestHandler<CreateSubmissionCommand, 
         // 3. Check if used before (for Published Research or Course Curriculum)
         if (request.SubmissionType == 3 || request.SubmissionType == 4)
         {
-            var existingSubmission = await _unitOfWork.Repository<Submission>().FirstOrDefaultAsync(s => 
-                s.EmployeeId == request.EmployeeId && 
-                s.Title == request.Title && 
-                (s.Status == 4 || s.Status == 11)); // ناجح أو مستوفٍ
+            var existingSubmission = await _unitOfWork.Repository<Submission>().Entities.FirstOrDefaultAsync(s =>
+                s.EmployeeId == request.EmployeeId &&
+                s.Title == request.Title &&
+                (s.Status == 4 || s.Status == 11), cancellationToken); // ناجح أو مستوفٍ
 
             if (existingSubmission != null)
             {

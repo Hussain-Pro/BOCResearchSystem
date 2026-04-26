@@ -6,7 +6,7 @@ import { StatCard } from "@/components/StatCard";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { mockSessions, ROLE_LABELS, SUBMISSION_TYPE_LABELS } from "@/lib/mockData";
+import { ROLE_LABELS, SUBMISSION_TYPE_LABELS } from "@/lib/mockData";
 import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
 
@@ -14,29 +14,54 @@ export const Route = createFileRoute("/_app/dashboard")({
   component: Dashboard,
 });
 
+type SessionRow = {
+  id: number;
+  number: string;
+  date: string;
+  time: string;
+  location: string;
+  status: number;
+  submissionsCount: number;
+};
+
 function Dashboard() {
   const { user } = useAuth();
   const [submissions, setSubmissions] = useState<any[]>([]);
+  const [sessions, setSessions] = useState<SessionRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) return;
-    
-    const fetchSubmissions = async () => {
+
+    const load = async () => {
+      setLoading(true);
       try {
-        const url = user.role === "Employee" 
-          ? "/submissions/my" 
-          : "/submissions";
-        const response = await api.get(url);
-        setSubmissions(response.data.data);
+        const subUrl = user.role === "Employee" ? "/submissions/my" : "/submissions";
+        const [subRes, sesRes] = await Promise.all([
+          api.get(subUrl),
+          api.get("/sessions").catch(() => ({ data: { data: [] } })),
+        ]);
+        setSubmissions(subRes.data.data ?? []);
+        const raw = sesRes.data.data ?? [];
+        setSessions(
+          raw.map((s: any) => ({
+            id: s.id,
+            number: String(s.number ?? ""),
+            date: new Date(s.date).toLocaleDateString("ar-IQ"),
+            time: typeof s.time === "string" ? s.time.slice(0, 5) : String(s.time ?? ""),
+            location: s.location ?? "—",
+            status: s.status,
+            submissionsCount: s.submissionsCount ?? 0,
+          }))
+        );
       } catch (error) {
-        console.error("Failed to fetch submissions", error);
+        console.error("Failed to fetch dashboard data", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchSubmissions();
+    void load();
   }, [user]);
 
   if (!user) return null;
@@ -74,7 +99,7 @@ function Dashboard() {
           <StatCard title={isEmployee ? "بحوثي" : "إجمالي التقديمات"} value={submissions.length} icon={FileText} variant="primary" trend="هذه السنة" />
           <StatCard title="قيد المعالجة" value={pendingCount} icon={Clock} variant="warning" trend="بحاجة للمتابعة" />
           <StatCard title={isEmployee ? "بحوث ناجحة" : "ناجحة/مستوفية"} value={successCount} icon={CheckCircle2} variant="success" trend="مقبولة للترقية" />
-          <StatCard title="اجتماعات قادمة" value={mockSessions.filter((s) => s.status === 1).length} icon={Calendar} variant="info" trend="هذا الشهر" />
+          <StatCard title="اجتماعات قادمة" value={sessions.filter((s) => s.status === 1).length} icon={Calendar} variant="info" trend="هذا الشهر" />
         </div>
       )}
 
@@ -126,7 +151,7 @@ function Dashboard() {
             <CardTitle>النشاط القادم</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {mockSessions.filter((s) => s.status === 1).map((s) => (
+            {sessions.filter((s) => s.status === 1).map((s) => (
               <div key={s.id} className="rounded-lg border bg-gradient-to-br from-info/5 to-transparent p-3">
                 <div className="flex items-center gap-2 text-info">
                   <Calendar className="h-4 w-4" />

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BOCResearch.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f3fdd501a0c89f75fdac4824ae274743b5f41112")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5c284d0419e0f869f2139a98386c01043649da27")]
 [assembly: System.Reflection.AssemblyProductAttribute("BOCResearch.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BOCResearch.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

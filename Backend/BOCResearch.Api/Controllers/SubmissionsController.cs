@@ -1,6 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using BOCResearch.Api.Models;
 using BOCResearch.Application.Features.Submissions.Commands;
+using BOCResearch.Application.Features.Submissions.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +21,18 @@ public class SubmissionsController : ControllerBase
     public SubmissionsController(IMediator mediator)
     {
         _mediator = mediator;
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var empId = User.FindFirst("EmployeeId")?.Value;
+        var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+        var result = await _mediator.Send(new GetSubmissionByIdQuery(id, empId, roles));
+        if (result == null)
+            return NotFound(new ApiResponse<string>("التقديم غير موجود أو لا تملك صلاحية عرضه"));
+
+        return Ok(new ApiResponse<SubmissionDetailDto>(result));
     }
 
     [HttpPost]

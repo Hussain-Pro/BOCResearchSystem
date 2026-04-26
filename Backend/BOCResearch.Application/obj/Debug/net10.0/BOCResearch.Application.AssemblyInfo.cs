@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BOCResearch.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0680e5a20736c4c5c61d5f791e470ce4cdaa0ccf")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5c284d0419e0f869f2139a98386c01043649da27")]
 [assembly: System.Reflection.AssemblyProductAttribute("BOCResearch.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BOCResearch.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

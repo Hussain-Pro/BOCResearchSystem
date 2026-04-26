@@ -1,6 +1,8 @@
 import axios, { InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 
-const API_BASE_URL = 'http://localhost:5250/api'; 
+const API_BASE_URL =
+  (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL) ||
+  'http://localhost:5250/api'; 
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -23,9 +25,12 @@ api.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error: any) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('ers_token');
-      localStorage.removeItem('ers_user');
-      window.location.href = '/';
+      const reqUrl = String(error.config?.url ?? '');
+      if (!reqUrl.includes('/auth/login')) {
+        localStorage.removeItem('ers_token');
+        localStorage.removeItem('ers_user');
+        window.location.href = '/';
+      }
     }
     return Promise.reject(error);
   }

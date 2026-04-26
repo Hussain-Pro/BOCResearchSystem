@@ -43,7 +43,7 @@ function MySubmissions() {
 
   const items = submissions
     .filter((s) => s.title.toLowerCase().includes(search.toLowerCase()))
-    .filter((s) => typeFilter === "all" || s.submissionType === Number(typeFilter));
+    .filter((s) => typeFilter === "all" || s.type === Number(typeFilter));
 
   return (
     <div className="space-y-6">
@@ -110,7 +110,7 @@ function MySubmissions() {
                     <TableCell className="max-w-md">
                       <div className="font-medium">{s.title}</div>
                     </TableCell>
-                    <TableCell>{(SUBMISSION_TYPE_LABELS as any)[s.submissionType]}</TableCell>
+                    <TableCell>{(SUBMISSION_TYPE_LABELS as any)[s.type]}</TableCell>
                     <TableCell className="text-sm text-muted-foreground">{new Date(s.submittedAt).toLocaleDateString("ar-IQ")}</TableCell>
                     <TableCell><StatusBadge status={s.status} /></TableCell>
                     <TableCell>

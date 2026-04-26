@@ -28,6 +28,7 @@ import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppBatchesRouteImport } from './routes/_app/batches'
 import { Route as AppAuditLogsRouteImport } from './routes/_app/audit-logs'
 import { Route as AppAssignedRouteImport } from './routes/_app/assigned'
+import { Route as AppSubmissionsIdRouteImport } from './routes/_app/submissions.$id'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -123,6 +124,11 @@ const AppAssignedRoute = AppAssignedRouteImport.update({
   path: '/assigned',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSubmissionsIdRoute = AppSubmissionsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppSubmissionsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -140,9 +146,10 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AppProfileRoute
   '/sessions': typeof AppSessionsRoute
   '/settings': typeof AppSettingsRoute
-  '/submissions': typeof AppSubmissionsRoute
+  '/submissions': typeof AppSubmissionsRouteWithChildren
   '/submit': typeof AppSubmitRoute
   '/users': typeof AppUsersRoute
+  '/submissions/$id': typeof AppSubmissionsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -160,9 +167,10 @@ export interface FileRoutesByTo {
   '/profile': typeof AppProfileRoute
   '/sessions': typeof AppSessionsRoute
   '/settings': typeof AppSettingsRoute
-  '/submissions': typeof AppSubmissionsRoute
+  '/submissions': typeof AppSubmissionsRouteWithChildren
   '/submit': typeof AppSubmitRoute
   '/users': typeof AppUsersRoute
+  '/submissions/$id': typeof AppSubmissionsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -182,9 +190,10 @@ export interface FileRoutesById {
   '/_app/profile': typeof AppProfileRoute
   '/_app/sessions': typeof AppSessionsRoute
   '/_app/settings': typeof AppSettingsRoute
-  '/_app/submissions': typeof AppSubmissionsRoute
+  '/_app/submissions': typeof AppSubmissionsRouteWithChildren
   '/_app/submit': typeof AppSubmitRoute
   '/_app/users': typeof AppUsersRoute
+  '/_app/submissions/$id': typeof AppSubmissionsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -207,6 +216,7 @@ export interface FileRouteTypes {
     | '/submissions'
     | '/submit'
     | '/users'
+    | '/submissions/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -227,6 +237,7 @@ export interface FileRouteTypes {
     | '/submissions'
     | '/submit'
     | '/users'
+    | '/submissions/$id'
   id:
     | '__root__'
     | '/'
@@ -248,6 +259,7 @@ export interface FileRouteTypes {
     | '/_app/submissions'
     | '/_app/submit'
     | '/_app/users'
+    | '/_app/submissions/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -392,8 +404,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAssignedRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/submissions/$id': {
+      id: '/_app/submissions/$id'
+      path: '/$id'
+      fullPath: '/submissions/$id'
+      preLoaderRoute: typeof AppSubmissionsIdRouteImport
+      parentRoute: typeof AppSubmissionsRoute
+    }
   }
 }
+
+interface AppSubmissionsRouteChildren {
+  AppSubmissionsIdRoute: typeof AppSubmissionsIdRoute
+}
+
+const AppSubmissionsRouteChildren: AppSubmissionsRouteChildren = {
+  AppSubmissionsIdRoute: AppSubmissionsIdRoute,
+}
+
+const AppSubmissionsRouteWithChildren = AppSubmissionsRoute._addFileChildren(
+  AppSubmissionsRouteChildren,
+)
 
 interface AppRouteChildren {
   AppAssignedRoute: typeof AppAssignedRoute
@@ -408,7 +439,7 @@ interface AppRouteChildren {
   AppProfileRoute: typeof AppProfileRoute
   AppSessionsRoute: typeof AppSessionsRoute
   AppSettingsRoute: typeof AppSettingsRoute
-  AppSubmissionsRoute: typeof AppSubmissionsRoute
+  AppSubmissionsRoute: typeof AppSubmissionsRouteWithChildren
   AppSubmitRoute: typeof AppSubmitRoute
   AppUsersRoute: typeof AppUsersRoute
 }
@@ -426,7 +457,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppProfileRoute: AppProfileRoute,
   AppSessionsRoute: AppSessionsRoute,
   AppSettingsRoute: AppSettingsRoute,
-  AppSubmissionsRoute: AppSubmissionsRoute,
+  AppSubmissionsRoute: AppSubmissionsRouteWithChildren,
   AppSubmitRoute: AppSubmitRoute,
   AppUsersRoute: AppUsersRoute,
 }

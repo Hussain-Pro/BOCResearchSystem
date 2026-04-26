@@ -11,11 +11,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import {
-  mockQualifications, mockMasterEmployees, mockUsers, type MasterEmployee,
-} from "@/lib/mockData";
+import { mockQualifications } from "@/lib/mockData";
 import { generateUsername } from "@/lib/transliterate";
 import { toast } from "sonner";
+import { api } from "@/lib/api";
 
 export const Route = createFileRoute("/register")({
   component: RegisterPage,
@@ -44,6 +43,17 @@ const schema = z.object({
   message: "كلمتا المرور غير متطابقتين",
 });
 
+type VerifiedLookup = {
+  employeeId: string;
+  fullName: string;
+  department: string;
+  section: string;
+  jobTitle: string;
+  jobGrade: number;
+  qualification: number;
+  qualificationName: string;
+};
+
 type FormState = {
   staffNo: string; fullName: string; email: string; username: string;
   password: string; confirmPassword: string; activationCode: string;
@@ -51,6 +61,18 @@ type FormState = {
   jobGrade: "2" | "3"; qualification: string;
   idCardFile: string; idCardName: string; agree: boolean;
 };
+
+async function uploadBadgeDataUrl(dataUrl: string, filename: string): Promise<string> {
+  const blob = await (await fetch(dataUrl)).blob();
+  const fd = new FormData();
+  fd.append("file", blob, filename || "badge.jpg");
+  const uploadRes = await api.post("/upload/badge", fd, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  const path = uploadRes.data?.data;
+  if (typeof path !== "string" || !path) throw new Error("bad_upload");
+  return path;
+}
 
 const INITIAL: FormState = {
   staffNo: "", fullName: "", email: "", username: "",
@@ -68,7 +90,8 @@ function RegisterPage() {
   const [form, setForm] = useState<FormState>(INITIAL);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [verifying, setVerifying] = useState(false);
-  const [verified, setVerified] = useState<MasterEmployee | null>(null);
+  const [verified, setVerified] = useState<VerifiedLookup | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   if (user) return <Navigate to="/dashboard" />;
 
@@ -78,38 +101,56 @@ function RegisterPage() {
   };
 
   // ===== Step 1: verify staff number against master =====
-  const verifyStaffNo = () => {
+  const verifyStaffNo = async () => {
     if (!form.staffNo.trim()) {
       toast.error("أدخل الرقم الوظيفي أولاً");
       return;
     }
     setVerifying(true);
-    // simulate API latency
-    setTimeout(() => {
-      const found = mockMasterEmployees.find((e) => e.staffNo === form.staffNo.trim());
-      setVerifying(false);
-      if (!found) {
+    try {
+      const res = await api.get(`/employees/lookup/${encodeURIComponent(form.staffNo.trim())}`);
+      const d = res.data?.data;
+      if (!d) {
         setVerified(null);
         toast.error("الرقم الوظيفي غير موجود في قاعدة بيانات الموارد البشرية");
         return;
       }
-      setVerified(found);
-      const takenUsernames = new Set(mockUsers.map((u) => u.email.split("@")[0]));
-      const suggestedUsername = generateUsername(found.fullName, takenUsernames);
+      const lookup: VerifiedLookup = {
+        employeeId: d.employeeId,
+        fullName: d.fullName,
+        department: d.department,
+        section: d.section,
+        jobTitle: d.jobTitle,
+        jobGrade: d.jobGrade,
+        qualification: d.qualification,
+        qualificationName: d.qualificationName,
+      };
+      setVerified(lookup);
+      const suggestedUsername = generateUsername(d.fullName, new Set<string>());
       const suggestedEmail = `${suggestedUsername}@boc.oil.gov.iq`;
       setForm((f) => ({
         ...f,
-        fullName: found.fullName,
-        department: found.department,
-        division: found.division,
-        jobTitle: found.designation,
-        jobGrade: (found.grade === 2 ? "2" : "3"),
+        fullName: d.fullName,
+        department: d.department,
+        division: d.section,
+        jobTitle: d.jobTitle,
+        jobGrade: d.jobGrade === 2 ? "2" : "3",
         username: suggestedUsername,
         email: f.email || suggestedEmail,
       }));
       setErrors({});
       toast.success("تم التحقق من بياناتك في الملف الرئيسي");
-    }, 700);
+    } catch (e: unknown) {
+      setVerified(null);
+      const err = e as { response?: { status?: number; data?: { message?: string } } };
+      const msg =
+        err.response?.status === 409
+          ? err.response?.data?.message || "يوجد حساب مرتبط بهذا الرقم"
+          : err.response?.data?.message || "الرقم الوظيفي غير موجود في قاعدة بيانات الموارد البشرية";
+      toast.error(msg);
+    } finally {
+      setVerifying(false);
+    }
   };
 
   // ===== Username regenerate =====
@@ -118,8 +159,7 @@ function RegisterPage() {
       toast.error("الاسم الكامل مطلوب لإنشاء اسم المستخدم");
       return;
     }
-    const taken = new Set(mockUsers.map((u) => u.email.split("@")[0]));
-    // also avoid the current one to actually get a new variant
+    const taken = new Set<string>();
     if (form.username) taken.add(form.username);
     const next = generateUsername(form.fullName, taken);
     set("username", next);
@@ -155,7 +195,7 @@ function RegisterPage() {
   };
 
   // ===== Submit =====
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!verified) {
       toast.error("يجب التحقق من الرقم الوظيفي أولاً");
@@ -172,21 +212,32 @@ function RegisterPage() {
       toast.error("يرجى تصحيح الأخطاء في النموذج");
       return;
     }
-    const res = register({
-      employeeId: form.staffNo,
-      fullName: form.fullName,
-      email: form.email,
-      username: form.username,
-      password: form.password,
-      activationCode: form.activationCode,
-      department: form.department,
-      jobTitle: form.jobTitle,
-      jobGrade: Number(form.jobGrade) as 2 | 3,
-      qualification: form.qualification,
-    });
-    if (!res.ok) return toast.error(res.message);
-    toast.success("تم إرسال طلب التسجيل، بانتظار تفعيل المشرف");
-    navigate({ to: "/" });
+    setSubmitting(true);
+    try {
+      let badgePath: string | null = null;
+      if (form.idCardFile.startsWith("data:")) {
+        badgePath = await uploadBadgeDataUrl(form.idCardFile, form.idCardName || "badge.jpg");
+      }
+      const res = await register({
+        employeeId: verified.employeeId,
+        fullName: form.fullName,
+        email: form.email,
+        username: form.username,
+        password: form.password,
+        activationCode: form.activationCode,
+        badgeImagePath: badgePath,
+      });
+      if (!res.ok) {
+        toast.error(res.message);
+        return;
+      }
+      toast.success("تم إرسال طلب التسجيل، بانتظار تفعيل المشرف");
+      navigate({ to: "/" });
+    } catch {
+      toast.error("فشل رفع صورة الهوية أو إرسال الطلب");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   // Inline simple field renderer (kept as a normal component to avoid focus loss).
@@ -217,11 +268,11 @@ function RegisterPage() {
               أدخل رقمك الوظيفي ليتم جلب بياناتك تلقائياً من ملف الموارد البشرية، ثم ارفع صورة هويتك للتحقق.
             </p>
             <div className="space-y-2 rounded-xl border border-white/20 bg-white/10 p-4 backdrop-blur text-sm">
-              <p>💡 رمز تفعيل تجريبي: <code className="rounded bg-white/20 px-2 py-0.5 font-mono">ERS-2025</code></p>
+              <p>💡 بعد تشغيل الخادم، استدعِ <code className="rounded bg-white/20 px-2 py-0.5 font-mono">GET /api/auth/seed</code> لإنشاء الأدوار والموظفين التجريبيين.</p>
               <p>🔢 أرقام وظيفية للتجربة: <code className="rounded bg-white/20 px-2 py-0.5 font-mono">10245</code> · <code className="rounded bg-white/20 px-2 py-0.5 font-mono">10312</code> · <code className="rounded bg-white/20 px-2 py-0.5 font-mono">10488</code></p>
             </div>
           </div>
-          <p className="text-xs text-white/50">© 2025 شركة نفط البصرة. جميع الحقوق محفوظة.</p>
+          <p className="text-xs text-white/50">© 2026 شركة نفط البصرة. جميع الحقوق محفوظة.</p>
         </div>
       </div>
 
@@ -265,7 +316,7 @@ function RegisterPage() {
                   <div className="space-y-0.5">
                     <p className="font-semibold text-success">تم التحقق بنجاح</p>
                     <p className="text-muted-foreground text-xs">
-                      {verified.fullName} — {verified.department} / {verified.division}
+                      {verified.fullName} — {verified.department} / {verified.section}
                     </p>
                   </div>
                 </div>
@@ -457,8 +508,8 @@ function RegisterPage() {
             </div>
             {errors.agree && <p className="text-xs text-destructive">{errors.agree}</p>}
 
-            <Button type="submit" className="w-full bg-gradient-primary shadow-glow hover:opacity-90" size="lg" disabled={!verified}>
-              إرسال طلب التسجيل
+            <Button type="submit" className="w-full bg-gradient-primary shadow-glow hover:opacity-90" size="lg" disabled={!verified || submitting}>
+              {submitting ? "جارٍ الإرسال..." : "إرسال طلب التسجيل"}
             </Button>
 
             <p className="text-center text-sm text-muted-foreground">

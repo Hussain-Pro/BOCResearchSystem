@@ -39,8 +39,8 @@
           "net10.0": {
             "targetAlias": "net10.0",
             "projectReferences": {
-              "D:\\FlutterProjects\\BOCResearchSystem\\Backend\\BOCResearch.Domain\\BOCResearch.Domain.csproj": {
-                "projectPath": "D:\\FlutterProjects\\BOCResearchSystem\\Backend\\BOCResearch.Domain\\BOCResearch.Domain.csproj"
+              "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Domain\\BOCResearch.Domain.csproj": {
+                "projectPath": "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Domain\\BOCResearch.Domain.csproj"
               }
             }
           }
@@ -72,6 +72,10 @@
             "MediatR": {
               "target": "Package",
               "version": "[14.1.0, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[10.0.7, )"
             }
           },
           "imports": [
@@ -368,14 +372,14 @@
         }
       }
     },
-    "D:\\FlutterProjects\\BOCResearchSystem\\Backend\\BOCResearch.Domain\\BOCResearch.Domain.csproj": {
+    "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Domain\\BOCResearch.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\FlutterProjects\\BOCResearchSystem\\Backend\\BOCResearch.Domain\\BOCResearch.Domain.csproj",
+        "projectUniqueName": "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Domain\\BOCResearch.Domain.csproj",
         "projectName": "BOCResearch.Domain",
-        "projectPath": "D:\\FlutterProjects\\BOCResearchSystem\\Backend\\BOCResearch.Domain\\BOCResearch.Domain.csproj",
+        "projectPath": "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Domain\\BOCResearch.Domain.csproj",
         "packagesPath": "C:\\Users\\pc\\.nuget\\packages\\",
-        "outputPath": "D:\\FlutterProjects\\BOCResearchSystem\\Backend\\BOCResearch.Domain\\obj\\",
+        "outputPath": "D:\\FlutterProjects\\BOCResearchSystem\\backend\\BOCResearch.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\DevExpress 25.1\\Components\\Offline Packages",

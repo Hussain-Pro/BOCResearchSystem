@@ -20,6 +20,8 @@ public class Repository<T> : IRepository<T> where T : class
         _dbSet = context.Set<T>();
     }
 
+    public IQueryable<T> Entities => _dbSet.AsQueryable();
+
     public async Task<T?> GetByIdAsync(object id) => await _dbSet.FindAsync(id);
 
     public async Task<IEnumerable<T>> GetAllAsync() => await _dbSet.ToListAsync();
@@ -33,6 +35,12 @@ public class Repository<T> : IRepository<T> where T : class
     {
         _dbSet.Attach(entity);
         _context.Entry(entity).State = EntityState.Modified;
+    }
+
+    public Task UpdateAsync(T entity)
+    {
+        Update(entity);
+        return Task.CompletedTask;
     }
 
     public void Remove(T entity) => _dbSet.Remove(entity);

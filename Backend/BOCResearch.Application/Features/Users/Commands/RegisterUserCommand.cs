@@ -36,6 +36,10 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, int>
         if (await _unitOfWork.Repository<User>().Entities.AnyAsync(u => u.Email == request.Email))
             throw new Exception("البريد الإلكتروني مستخدم مسبقاً");
 
+        if (!string.IsNullOrWhiteSpace(request.EmployeeId) &&
+            await _unitOfWork.Repository<User>().Entities.AnyAsync(u => u.EmployeeId == request.EmployeeId))
+            throw new Exception("يوجد حساب مرتبط بهذا الرقم الوظيفي");
+
         var user = new User
         {
             Username = request.Username,
